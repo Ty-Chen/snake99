@@ -8,7 +8,7 @@
 #include <conio.h>
 #include <cmath>
 #include <windows.h>
-using namespace std;
+
 
 /*** 光标定位 ***/
 HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -36,6 +36,7 @@ double random(double start, double end)
 
 /*** 定义地图的长宽，蛇的坐标，长度，方向，食物的位置 ***/
 int height, width;
+int newHeight, newWidth;
 
 struct node
 {
@@ -47,32 +48,34 @@ node food;
 int direct[4][2] = { { -1,0 },{ 1,0 },{ 0,-1 },{ 0,1 } };
 
 /*** 输出墙 ***/
-void print_wall()
+void print_wall(int widthStart, int widthEnd, int heightStart, int heightEnd)
 {
-	cout << " ";
-	for (int i = 1; i <= width; i++)
-		cout << "-";
-	cout << endl;
-	for (int j = 0; j <= height - 1; j++)
+	std::cout << " ";
+	for (int i = widthStart; i <= widthEnd; i++)
+		std::cout << "-";
+	std::cout << std::endl;
+	for (int j = heightStart; j <= heightEnd - 1; j++)
 	{
-		cout << "|";
-		for (int i = 1; i <= width; i++) cout << " ";
-		cout << "|" << endl;
+		std::cout << "|";
+		for (int i = widthStart; i <= widthEnd; i++) std::cout << " ";
+		std::cout << "|" << std::endl;
 	}
-	cout << " ";
-	for (int i = 1; i <= width; i++)
-		cout << "-";
+	std::cout << " ";
+	for (int i = widthStart; i <= widthEnd; i++)
+	{
+		std::cout << "-";
+	}
 }
 
 /*** 首次输出蛇，其中snake[0]代表头 ***/
 void print_snake()
 {
 	locate(snake[0].x, snake[0].y);
-	cout << "@";
+	std::cout << "@";
 	for (int i = 1; i <= snake_length - 1; i++)
 	{
 		locate(snake[i].x, snake[i].y);
-		cout << "*";
+		std::cout << "*";
 	}
 }
 
@@ -107,7 +110,7 @@ bool print_food()
 		if (e) break;
 	}
 	locate(food.x, food.y);
-	cout << "$";
+	std::cout << "$";
 	return true;
 }
 
@@ -124,7 +127,8 @@ bool go_ahead()
 	snake[0].x += direct[dir][0];
 	snake[0].y += direct[dir][1];
 	locate(snake[1].x, snake[1].y);
-	cout << "*";
+	std::cout << "*";
+
 	/*** 吃到了食物 ***/
 	if (snake[0].x == food.x && snake[0].y == food.y)
 	{
@@ -132,21 +136,26 @@ bool go_ahead()
 		e = true;
 		snake[snake_length - 1] = temp;
 	}
+
 	/*** 输出此时蛇状态 ***/
 	if (!e)
 	{
 		locate(temp.x, temp.y);
-		cout << " ";
+		std::cout << " ";
 	}
 	else
+	{
 		print_food();
+	}
+
 	locate(snake[0].x, snake[0].y);
-	cout << "@";
+	std::cout << "@";
+
 	/*** 如果自撞 ***/
 	if (!is_correct())
 	{
 		system("cls");
-		cout << "You lose!" << endl << "Length: " << snake_length << endl;
+		std::cout << "You lose!" << std::endl << "Length: " << snake_length << std::endl;
 		return false;
 	}
 	return true;
@@ -155,24 +164,24 @@ bool go_ahead()
 /*** 主函数 ***/
 int main()
 {
-	cout << "--------------------贪吃蛇---------------------" << endl;
-	cout << "请先输入两个数,表示地图大小.要求长宽均不小于10." << endl;
-	cout << "请注意窗口大小,以免发生错位.建议将窗口调为最大." << endl;
-	cout << "再选择难度.请在1-10中输入1个数,1最简单,10则最难" << endl;
-	cout << "然后进入游戏画面,以方向键控制方向.祝你游戏愉快!" << endl;
-	cout << "-----------------------------------------------" << endl;
-	cin >> height >> width;
+	std::cout << "--------------------贪吃蛇---------------------" << std::endl;
+	std::cout << "请先输入两个数,表示地图大小.要求长宽均不小于10." << std::endl;
+	std::cout << "请注意窗口大小,以免发生错位.建议将窗口调为最大." << std::endl;
+	std::cout << "再选择难度.请在1-10中输入1个数,1最简单,10则最难" << std::endl;
+	std::cout << "然后进入游戏画面,以方向键控制方向.祝你游戏愉快!" << std::endl;
+	std::cout << "-----------------------------------------------" << std::endl;
+	std::cin >> height >> width;
 	if (height < 10 || width < 10 || height > 200 || width > 200)
 	{
-		cout << "ERROR" << endl;
+		std::cout << "ERROR" << std::endl;
 		system("pause");
 		return 0;
 	}
 	int hard;
-	cin >> hard;
-	if (hard <= 0 || hard > 100)
+	std::cin >> hard;
+	if (hard <= 0 || hard > 10)
 	{
-		cout << "ERROR" << endl;
+		std::cout << "ERROR" << std::endl;
 		system("pause");
 		return 0;
 	}
@@ -193,16 +202,17 @@ Again:
 	/*** 输出初始地图，蛇与食物 ***/
 	system("cls");
 	hide();
-	print_wall();
+	print_wall(0, width, 0, height);
 	print_food();
 	print_snake();
 	locate(height + 2, 0);
-	cout << "Now length: ";
+	std::cout << "Now length: ";
 	/*** 开始游戏 ***/
 	while (1)
 	{
 		/*** 难度随长度增加而提高 ***/
-		hard_len = (double)snake_length / (double)(height*width);
+		hard_len = (double)snake_length / (double)(height * width);
+
 		/*** 调节时间，单位是ms ***/
 		a = clock();
 		while (1)
@@ -210,6 +220,7 @@ Again:
 			b = clock();
 			if (b - a >= (int)(400 - 30 * hard) * (1 - sqrt(hard_len))) break;
 		}
+
 		/*** 接受键盘输入的上下左右，并以此改变方向 ***/
 		if (_kbhit())
 		{
@@ -242,14 +253,15 @@ Again:
 		if (!go_ahead()) break;
 		/*** 在最后输出此时长度 ***/
 		locate(height + 2, 12);
-		cout << snake_length;
+		std::cout << snake_length << std::endl;
+		std::cout << "stage: " << hard << std::endl;
 	}
 
 	//system("pause");
 
 	char cmd;
-	cout << "Do you want play again?(Y(y)/N(n))" << endl;
-	cin >> cmd;
+	std::cout << "Do you want play again?(Y(y)/N(n))" << std::endl;
+	std::cin >> cmd;
 	if (cmd == 'y' || cmd == 'Y')
 	{
 		goto Again;
