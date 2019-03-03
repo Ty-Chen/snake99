@@ -200,6 +200,7 @@ bool go_ahead()
 int main()
 {
 	int height, width;
+	int second = 5;
 
 	std::cout << "--------------------贪吃蛇---------------------" << std::endl;
 	std::cout << "请输入两个数,表示地图高和款.要求长宽均不小于10." << std::endl;
@@ -279,6 +280,17 @@ Again:
 			{ 
 				break;			
 			}
+		}
+
+		/* 每十秒缩圈一次 */
+		if (moveClockB - lastClock > 10000)
+		{
+			/* 倒计时 */
+			locate(1, allArea[0].xEnd + 3);
+			std::cout << "new wall will appear in " << second << " seconds";
+
+			/* 打印新墙*/
+
 		}
 
 		/* 接受键盘输入的上下左右，并以此改变方向 */
