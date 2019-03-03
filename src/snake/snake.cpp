@@ -289,7 +289,7 @@ Again:
 			locate(1, allArea[0].xEnd + 3);
 			std::cout << "new wall will appear in " << second << " seconds";
 
-			/* 打印新墙*/
+			/* 生成新圈范围，打印新墙*/
 
 		}
 
