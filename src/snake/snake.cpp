@@ -95,7 +95,6 @@ void print_snake()
 }
 
 /* 判断是否撞墙或者自撞 */
-
 bool is_correct()
 {
 	for (int i = 0; i < stage; i++)
@@ -115,6 +114,18 @@ bool is_correct()
 	}
 
 	return true;
+}
+
+/* 判断是否吃毒 */
+void is_danger()
+{
+
+}
+
+/* 随机生成新圈 */
+wall new_wall()
+{
+
 }
 
 /* 随机生成并输出食物位置 */
@@ -200,7 +211,6 @@ bool go_ahead()
 int main()
 {
 	int height, width;
-	int second = 5;
 
 	std::cout << "--------------------贪吃蛇---------------------" << std::endl;
 	std::cout << "请输入两个数,表示地图高和款.要求长宽均不小于10." << std::endl;
@@ -231,13 +241,16 @@ int main()
 Again:
 
 	/* 数据全部初始化，包括蛇长，位置，方向 */
+	int		second = 20;
 	char	ch;
-	double  hard_len;
+	wall	newWall;
+	bool	areaChange;
 	clock_t lastClock;
 	clock_t moveClockA, moveClockB;
 
 	stage			= 1;
 	energy			= 0;
+	areaChange		= false;
 	snake_length	= 5;
 	initArea.xEnd   = width;
 	initArea.yEnd   = height;
@@ -268,30 +281,58 @@ Again:
 	/* 开始游戏 */
 	while (1)
 	{
-		/* 难度随长度增加而提高 */
-		hard_len = (double)snake_length / (double)(height * width);
+		/* 难度随长度增加而提高 
+		double hard_len = (double)snake_length / (double)(height * width);
+		*/
 
 		/* 调节时间，单位是ms */
 		moveClockA = clock();
 		while (1)
 		{
 			moveClockB = clock();
-			if (moveClockB - moveClockA >= (int)(400 - 30 * hard) * (1 - sqrt(hard_len))) 
+			//if (moveClockB - moveClockA >= (int)(400 - 30 * hard) * (1 - sqrt(hard_len))) 
+			if (moveClockB - moveClockA >= (int)(500 - 30 * hard)) 
 			{ 
 				break;			
 			}
 		}
 
-		/* 每十秒缩圈一次 */
-		if (moveClockB - lastClock > 10000)
-		{
+		if (second > 10)
+		{ 
 			/* 倒计时 */
 			locate(1, allArea[0].xEnd + 3);
-			std::cout << "new wall will appear in " << second << " seconds";
-
-			/* 生成新圈范围，打印新墙*/
-
+			std::cout << "new wall will appear in " << second - 10 << " seconds                ";
+			second--;
 		}
+		else if (second > 0)
+		{
+			if (!areaChange)
+			{
+				areaChange = true;
+
+				/* 刷新随机缩圈并打印 */
+				newWall = new_wall();
+				print_wall(newWall);
+			}
+
+			/* 倒计时 */
+			locate(1, allArea[0].xEnd + 3);
+			std::cout << "outer area will be dangerous in " << second << " seconds";
+			second--;
+		}
+		else if (second == 0)
+		{
+			second = 20;
+			stage++;
+			areaChange = false;
+
+			/* 更新newArea */
+			newArea = newWall;
+			allArea[stage - 1] = newArea;
+		}
+
+		/* 判断当前是否吃毒，吃毒则长度减少 */
+		is_danger();
 
 		/* 接受键盘输入的上下左右，并以此改变方向 */
 		if (_kbhit())

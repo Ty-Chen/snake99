@@ -1,2 +1,3 @@
 ﻿  snake.cpp
-  snake.vcxproj -> E:\snake\snake99\src\Debug\snake.exe
+e:\snake\snake99\src\snake\snake.cpp(248): warning C4101: “hard_len”: 未引用的局部变量
+e:\snake\snake99\src\snake\snake.cpp(129): error C4716: “new_wall”: 必须返回一个值
