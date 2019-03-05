@@ -41,7 +41,7 @@ struct node
 	int x, y;
 }snake[1000];
 
-struct wall
+typedef struct wall
 {
 	int xStart;
 	int xEnd;
@@ -60,7 +60,8 @@ int direct[4][2] = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
 
 /* 输出墙 */
 void print_wall(wall area)
-{
+{	
+	locate(0, 0);
 	std::cout << " ";
 	for (int i = area.xStart; i <= area.xEnd; i++)
 	{
@@ -105,6 +106,7 @@ bool is_correct()
 			return false;
 		}
 	}
+
 	for (int i = 1; i <= snake_length - 1; i++)
 	{
 		if (snake[0].x == snake[i].x && snake[0].y == snake[i].y)
@@ -123,20 +125,34 @@ void is_danger()
 }
 
 /* 随机生成新圈 */
-wall new_wall()
+wall new_wall(wall area)
 {
+	srand((unsigned)time(0));
 
+	double width = area.xEnd - area.xStart;
+	double height = area.yEnd - area.yStart;
+	int i = (int)random(area.yStart, area.yStart + height * 1 / 5) + 1;
+	int j = (int)random(area.xStart, area.xStart + width * 1 / 5) + 1;
+
+	wall newWall;
+
+	newWall.xStart = j;
+	newWall.yStart = i;
+	newWall.xEnd   = j + width * 4 / 5;
+	newWall.yEnd   = i + height * 4 / 5;
+
+	return newWall;
 }
 
 /* 随机生成并输出食物位置 */
-bool print_food()
+bool print_food(wall area)
 {
 	srand((unsigned)time(0));
 	bool ok;
 	while (1)
 	{
 		ok = true;
-		int i = (int)random(newArea.yStart, newArea.yEnd) + 1, j = (int)random(newArea.xStart, newArea.xEnd) + 1;
+		int i = (int)random(area.yStart, area.yEnd) + 1, j = (int)random(area.xStart, area.xEnd) + 1;
 		food[0].x = i; food[0].y = j;
 		for (int k = 0; k <= snake_length - 1; k++)
 		{
@@ -191,7 +207,7 @@ bool go_ahead()
 	}
 	else
 	{
-		print_food();
+		print_food(newArea);
 	}
 
 	locate(snake[0].x, snake[0].y);
@@ -241,7 +257,7 @@ int main()
 Again:
 
 	/* 数据全部初始化，包括蛇长，位置，方向 */
-	int		second = 20;
+	double		second = 20;
 	char	ch;
 	wall	newWall;
 	bool	areaChange;
@@ -271,7 +287,7 @@ Again:
 	system("cls");
 	hide();
 	print_wall(newArea);
-	print_food();
+	print_food(newArea);
 	print_snake();
 	locate(initArea.yEnd + 2, 0);
 	std::cout << "Now length: ";
@@ -301,8 +317,8 @@ Again:
 		{ 
 			/* 倒计时 */
 			locate(1, allArea[0].xEnd + 3);
-			std::cout << "new wall will appear in " << second - 10 << " seconds                ";
-			second--;
+			std::cout << "new wall will appear in " << int (second - 10) << " seconds                ";
+			second -= 0.3;
 		}
 		else if (second > 0)
 		{
@@ -311,16 +327,16 @@ Again:
 				areaChange = true;
 
 				/* 刷新随机缩圈并打印 */
-				newWall = new_wall();
+				newWall = new_wall(newArea);
 				print_wall(newWall);
 			}
 
 			/* 倒计时 */
 			locate(1, allArea[0].xEnd + 3);
-			std::cout << "outer area will be dangerous in " << second << " seconds";
-			second--;
+			std::cout << "outer area will be dangerous in " << int (second) << " seconds";
+			second -= 0.3;
 		}
-		else if (second == 0)
+		else
 		{
 			second = 20;
 			stage++;
