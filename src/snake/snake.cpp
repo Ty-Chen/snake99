@@ -61,21 +61,25 @@ int direct[4][2] = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
 /* 输出墙 */
 void print_wall(wall area)
 {	
-	locate(0, 0);
+	locate(area.yStart, area.xStart);
 	std::cout << " ";
 	for (int i = area.xStart; i <= area.xEnd; i++)
 	{
 		std::cout << "-";
 	}
-	std::cout << std::endl;
 
 	for (int j = area.yStart; j <= area.yEnd - 1; j++)
 	{
+		locate(j + 1, area.xStart);
 		std::cout << "|";
-		for (int i = area.xStart; i <= area.xEnd; i++) std::cout << " ";
-		std::cout << "|" << std::endl;
+		for (int i = area.xStart; i <= area.xEnd; i++)
+		{
+			std::cout << " ";
+		}
+		std::cout << "|";
 	}
 
+	locate(area.yEnd + 1, area.xStart);
 	std::cout << " ";
 	for (int i = area.xStart; i <= area.xEnd; i++)
 	{
@@ -289,8 +293,6 @@ Again:
 	print_wall(newArea);
 	print_food(newArea);
 	print_snake();
-	locate(initArea.yEnd + 2, 0);
-	std::cout << "Now length: ";
 
 	lastClock = clock();
 
@@ -328,6 +330,7 @@ Again:
 
 				/* 刷新随机缩圈并打印 */
 				newWall = new_wall(newArea);
+				system("cls");
 				print_wall(newWall);
 			}
 
@@ -404,8 +407,8 @@ Again:
 		combo = false;
 
 		/* 在最后输出此时长度, 能量值， 游戏阶段 */
-		locate(height + 2, 12);
-		std::cout << snake_length << std::endl;
+		locate(height + 2, 0);
+		std::cout << "Now length: " << snake_length << std::endl;
 		std::cout << "energy : " << energy << std::endl;
 		std::cout << "stage : " << stage << std::endl;
 	}
