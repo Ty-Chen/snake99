@@ -16,8 +16,8 @@ COORD coord;
 
 void locate(int x, int y)
 {
-	coord.X = y;
-	coord.Y = x;
+	coord.X = x;
+	coord.Y = y;
 	SetConsoleCursorPosition(hout, coord);
 };
 
@@ -56,12 +56,18 @@ int energy = 0;
 int stage = 1;
 node food[10];
 bool combo = false;
-int direct[4][2] = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+int direct[4][2] = 
+{	
+	{ 0, -1 }, //下
+	{ 0, 1 },   //上
+	{ -1, 0 }, //左
+	{ 1, 0 },  //右
+};
 
 /* 输出墙 */
 void print_wall(wall area)
 {	
-	locate(area.yStart, area.xStart);
+	locate(area.xStart, area.yStart);
 	std::cout << " ";
 	for (int i = area.xStart; i <= area.xEnd; i++)
 	{
@@ -70,7 +76,7 @@ void print_wall(wall area)
 
 	for (int j = area.yStart; j <= area.yEnd - 1; j++)
 	{
-		locate(j + 1, area.xStart);
+		locate(area.xStart, j + 1);
 		std::cout << "|";
 		for (int i = area.xStart; i <= area.xEnd; i++)
 		{
@@ -79,7 +85,7 @@ void print_wall(wall area)
 		std::cout << "|";
 	}
 
-	locate(area.yEnd + 1, area.xStart);
+	locate(area.xStart, area.yEnd + 1);
 	std::cout << " ";
 	for (int i = area.xStart; i <= area.xEnd; i++)
 	{
@@ -318,7 +324,7 @@ Again:
 		if (second > 10)
 		{ 
 			/* 倒计时 */
-			locate(1, allArea[0].xEnd + 3);
+			locate(allArea[0].xEnd + 3, 1);
 			std::cout << "new wall will appear in " << int (second - 10) << " seconds                ";
 			second -= 0.3;
 		}
@@ -335,7 +341,7 @@ Again:
 			}
 
 			/* 倒计时 */
-			locate(1, allArea[0].xEnd + 3);
+			locate(allArea[0].xEnd + 3, 1);
 			std::cout << "outer area will be dangerous in " << int (second) << " seconds";
 			second -= 0.3;
 		}
@@ -407,7 +413,7 @@ Again:
 		combo = false;
 
 		/* 在最后输出此时长度, 能量值， 游戏阶段 */
-		locate(height + 2, 0);
+		locate(0, height + 2);
 		std::cout << "Now length: " << snake_length << std::endl;
 		std::cout << "energy : " << energy << std::endl;
 		std::cout << "stage : " << stage << std::endl;
