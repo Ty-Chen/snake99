@@ -64,7 +64,7 @@ int direct[4][2] =
 	{ 1, 0 },  //右
 };
 
-/* 输出墙 */
+/* 输出墙 虚墙上下用.左右： */
 void print_wall(wall area)
 {	
 	locate(area.xStart, area.yStart);
@@ -110,8 +110,8 @@ bool is_correct()
 {
 	for (int i = 0; i < stage; i++)
 	{ 
-		if (snake[0].x == allArea[i].yStart || snake[0].y == allArea[i].xStart 
-			|| snake[0].x == allArea[i].yEnd + 1 || snake[0].y == allArea[i].xEnd + 1)
+		if (snake[0].x == allArea[i].xStart || snake[0].y == allArea[i].yStart 
+			|| snake[0].x == allArea[i].xEnd + 1 || snake[0].y == allArea[i].yEnd + 1)
 		{
 			return false;
 		}
@@ -162,7 +162,7 @@ bool print_food(wall area)
 	while (1)
 	{
 		ok = true;
-		int i = (int)random(area.yStart, area.yEnd) + 1, j = (int)random(area.xStart, area.xEnd) + 1;
+		int i = (int)random(area.xStart, area.xEnd) + 1, j = (int)random(area.yStart, area.yEnd) + 1;
 		food[0].x = i; food[0].y = j;
 		for (int k = 0; k <= snake_length - 1; k++)
 		{
@@ -336,7 +336,7 @@ Again:
 
 				/* 刷新随机缩圈并打印 */
 				newWall = new_wall(newArea);
-				system("cls");
+				//system("cls");
 				print_wall(newWall);
 			}
 
