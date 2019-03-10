@@ -9,6 +9,8 @@
 #include <cmath>
 #include <windows.h>
 
+#define FOOD_NUM 5
+#define INIT_LEN 5
 
 /* 光标定位 */
 HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -56,6 +58,7 @@ int energy = 0;
 int stage = 1;
 node food[10];
 bool combo = false;
+
 int direct[4][2] = 
 {	
 	{ 0, -1 }, //下
@@ -65,31 +68,45 @@ int direct[4][2] =
 };
 
 /* 输出墙 虚墙上下用.左右： */
-void print_wall(wall area)
+void print_wall(wall area, bool real)
 {	
+	const char *floor, *wall;
+
 	locate(area.xStart, area.yStart);
 	std::cout << " ";
+
+	if (real)
+	{ 
+		wall  = "|";
+		floor = "-";
+	}
+	else
+	{
+		wall  = ":";
+		floor = ".";
+	}
+
 	for (int i = area.xStart; i <= area.xEnd; i++)
 	{
-		std::cout << "-";
+		std::cout << floor;
 	}
 
 	for (int j = area.yStart; j <= area.yEnd - 1; j++)
 	{
 		locate(area.xStart, j + 1);
-		std::cout << "|";
+		std::cout << wall;
 		for (int i = area.xStart; i <= area.xEnd; i++)
 		{
 			std::cout << " ";
 		}
-		std::cout << "|";
+		std::cout << wall;
 	}
 
 	locate(area.xStart, area.yEnd + 1);
 	std::cout << " ";
 	for (int i = area.xStart; i <= area.xEnd; i++)
 	{
-		std::cout << "-";
+		std::cout << floor;
 	}
 }
 
@@ -155,31 +172,46 @@ wall new_wall(wall area)
 }
 
 /* 随机生成并输出食物位置 */
-bool print_food(wall area)
+bool create_food(wall area)
 {
-	srand((unsigned)time(0));
 	bool ok;
-	while (1)
-	{
-		ok = true;
-		int i = (int)random(area.xStart, area.xEnd) + 1, j = (int)random(area.yStart, area.yEnd) + 1;
-		food[0].x = i; food[0].y = j;
-		for (int k = 0; k <= snake_length - 1; k++)
+
+	srand((unsigned)time(0));
+
+	for (int i = 0; i < FOOD_NUM; i++)
+	{ 
+		while (1)
 		{
-			if (snake[k].x == food[0].x && snake[k].y == food[0].y)
+			ok = true;
+			int x = (int)random(area.xStart, area.xEnd) + 1, y = (int)random(area.yStart, area.yEnd) + 1;
+			food[i].x = x; food[i].y = y;
+			for (int k = 0; k <= snake_length - 1; k++)
 			{
-				ok = false;
+				if (snake[k].x == food[i].x && snake[k].y == food[i].y)
+				{
+					ok = false;
+					break;
+				}
+			}
+			if (ok)
+			{
 				break;
 			}
 		}
-		if (ok)
-		{
-			break;
-		}
+		locate(food[i].x, food[i].y);
+		std::cout << "$";
 	}
-	locate(food[0].x, food[0].y);
-	std::cout << "$";
+
 	return true;
+}
+
+void print_food()
+{
+	for (int i = 0; i < FOOD_NUM; i++)
+	{
+		locate(food[i].x, food[i].y);
+		std::cout << "$";
+	}
 }
 
 /* 蛇的前进 */
@@ -215,10 +247,12 @@ bool go_ahead()
 		locate(temp.x, temp.y);
 		std::cout << " ";
 	}
+	/*
 	else
 	{
 		print_food(newArea);
 	}
+	*/
 
 	locate(snake[0].x, snake[0].y);
 	std::cout << "@";
@@ -277,7 +311,7 @@ Again:
 	stage			= 1;
 	energy			= 0;
 	areaChange		= false;
-	snake_length	= 5;
+	snake_length	= INIT_LEN;
 	initArea.xEnd   = width;
 	initArea.yEnd   = height;
 	initArea.xStart = 0;
@@ -286,18 +320,18 @@ Again:
 	newArea = initArea;
 	allArea[stage - 1] = newArea;
 
-	for (int i = 0; i <= 4; i++)
+	for (int i = 0; i < snake_length; i++)
 	{
-		snake[i].x = 1;
-		snake[i].y = 5 - i;
+		snake[i].x = snake_length - i;
+		snake[i].y = 1;
 	}
 	dir = 3;
 
 	/* 输出初始地图，蛇与食物 */
 	system("cls");
 	hide();
-	print_wall(newArea);
-	print_food(newArea);
+	print_wall(newArea, true);
+	create_food(newArea);
 	print_snake();
 
 	lastClock = clock();
@@ -337,7 +371,8 @@ Again:
 				/* 刷新随机缩圈并打印 */
 				newWall = new_wall(newArea);
 				//system("cls");
-				print_wall(newWall);
+				print_wall(newWall, false);
+				print_food();
 			}
 
 			/* 倒计时 */
@@ -350,6 +385,9 @@ Again:
 			second = 20;
 			stage++;
 			areaChange = false;
+
+			print_wall(newWall, true);
+			print_food();
 
 			/* 更新newArea */
 			newArea = newWall;
