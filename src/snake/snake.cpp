@@ -8,9 +8,11 @@
 #include <conio.h>
 #include <cmath>
 #include <windows.h>
+#include <vector>
 
 #define FOOD_NUM 5
 #define INIT_LEN 5
+#define SECOND_FACTOR 0.3
 
 /* 光标定位 */
 HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -53,11 +55,12 @@ typedef struct wall
 
 wall initArea, newArea, allArea[10];
 
-int snake_length, dir;
+int stage  = 1;
 int energy = 0;
-int stage = 1;
-node food[10];
-bool combo = false;
+int snake_length, dir;
+bool combo    = false;
+bool fastMode = false;
+std::vector<node> food;
 
 int direct[4][2] = 
 {	
@@ -148,7 +151,18 @@ bool is_correct()
 /* 判断是否吃毒 */
 void is_danger()
 {
-
+	for (int i = 0; i < snake_length; i++)
+	{
+		if (snake[i].x < newArea.xStart || snake[i].x > newArea.xEnd
+			|| snake[i].y < newArea.yStart || snake[i].y > newArea.yEnd
+			)
+		{
+			locate(snake[snake_length - 1].x, snake[snake_length - 1].y);
+			std::cout << " ";
+			snake_length--;
+			return;
+		}
+	}
 }
 
 /* 随机生成新圈 */
@@ -175,7 +189,7 @@ wall new_wall(wall area)
 bool create_food(wall area)
 {
 	bool ok;
-
+	node tmp;
 	srand((unsigned)time(0));
 
 	for (int i = 0; i < FOOD_NUM; i++)
@@ -184,10 +198,11 @@ bool create_food(wall area)
 		{
 			ok = true;
 			int x = (int)random(area.xStart, area.xEnd) + 1, y = (int)random(area.yStart, area.yEnd) + 1;
-			food[i].x = x; food[i].y = y;
+			tmp.x = x;
+			tmp.y = y;
 			for (int k = 0; k <= snake_length - 1; k++)
 			{
-				if (snake[k].x == food[i].x && snake[k].y == food[i].y)
+				if (snake[k].x == tmp.x && snake[k].y == tmp.y)
 				{
 					ok = false;
 					break;
@@ -198,7 +213,9 @@ bool create_food(wall area)
 				break;
 			}
 		}
-		locate(food[i].x, food[i].y);
+
+		food.push_back(tmp);
+		locate(tmp.x, tmp.y);
 		std::cout << "$";
 	}
 
@@ -207,9 +224,9 @@ bool create_food(wall area)
 
 void print_food()
 {
-	for (int i = 0; i < FOOD_NUM; i++)
+	for (std::vector<node>::iterator iter = food.begin(); iter < food.end(); iter++)
 	{
-		locate(food[i].x, food[i].y);
+		locate(iter->x, iter->y);
 		std::cout << "$";
 	}
 }
@@ -230,14 +247,22 @@ bool go_ahead()
 	std::cout << "*";
 
 	/* 吃到了食物 */
-	if (snake[0].x == food[0].x && snake[0].y == food[0].y)
-	{
-		snake_length++;
-		eat = true;
-		snake[snake_length - 1] = temp;
-		if (combo)
+	for (std::vector<node>::iterator iter = food.begin(); iter < food.end();)
+	{ 
+		if (snake[0].x == iter->x && snake[0].y == iter->y)
 		{
-			energy++;
+			snake_length++;
+			eat = true;
+			snake[snake_length - 1] = temp;
+			if (combo)
+			{
+				energy++;
+			}
+			iter = food.erase(iter);
+		}
+		else
+		{
+			iter++;
 		}
 	}
 
@@ -301,15 +326,18 @@ int main()
 Again:
 
 	/* 数据全部初始化，包括蛇长，位置，方向 */
-	double		second = 20;
+	int		cnt;
 	char	ch;
 	wall	newWall;
 	bool	areaChange;
+	double  second;
 	clock_t lastClock;
 	clock_t moveClockA, moveClockB;
 
+	cnt				= 0;
 	stage			= 1;
 	energy			= 0;
+	second			= 20;
 	areaChange		= false;
 	snake_length	= INIT_LEN;
 	initArea.xEnd   = width;
@@ -360,7 +388,7 @@ Again:
 			/* 倒计时 */
 			locate(allArea[0].xEnd + 3, 1);
 			std::cout << "new wall will appear in " << int (second - 10) << " seconds                ";
-			second -= 0.3;
+			second -= SECOND_FACTOR;
 		}
 		else if (second > 0)
 		{
@@ -378,7 +406,7 @@ Again:
 			/* 倒计时 */
 			locate(allArea[0].xEnd + 3, 1);
 			std::cout << "outer area will be dangerous in " << int (second) << " seconds";
-			second -= 0.3;
+			second -= SECOND_FACTOR;
 		}
 		else
 		{
@@ -394,8 +422,14 @@ Again:
 			allArea[stage - 1] = newArea;
 		}
 
+
 		/* 判断当前是否吃毒，吃毒则长度减少 */
-		is_danger();
+		cnt++;
+		if (cnt * SECOND_FACTOR > 1)
+		{
+			is_danger();
+			cnt = 0;
+		}
 
 		/* 接受键盘输入的上下左右，并以此改变方向 */
 		if (_kbhit())
