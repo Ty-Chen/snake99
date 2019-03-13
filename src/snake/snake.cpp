@@ -55,9 +55,9 @@ typedef struct wall
 
 wall initArea, newArea, allArea[10];
 
-int stage  = 1;
-int energy = 0;
-int snake_length, dir;
+int  stage  = 1;
+int  energy = 0;
+int  snake_length, dir;
 bool combo    = false;
 bool fastMode = false;
 std::vector<node> food;
@@ -133,7 +133,11 @@ bool is_correct()
 		if (snake[0].x == allArea[i].xStart || snake[0].y == allArea[i].yStart 
 			|| snake[0].x == allArea[i].xEnd + 1 || snake[0].y == allArea[i].yEnd + 1)
 		{
-			return false;
+			if (!fastMode)
+			{
+				return false;
+			}
+
 		}
 	}
 
@@ -237,6 +241,7 @@ bool go_ahead()
 	node temp;
 	bool eat = false;
 	temp = snake[snake_length - 1];
+
 	for (int i = snake_length - 1; i >= 1; i--)
 	{	
 		snake[i] = snake[i - 1];
@@ -245,6 +250,20 @@ bool go_ahead()
 	snake[0].y += direct[dir][1];
 	locate(snake[1].x, snake[1].y);
 	std::cout << "*";
+
+	/*快速模式再前进一次*/
+	if (fastMode)
+	{
+		snake_length -= 1;
+		for (int i = snake_length - 1; i >= 1; i--)
+		{
+			snake[i] = snake[i - 1];
+		}
+		snake[0].x += direct[dir][0];
+		snake[0].y += direct[dir][1];
+		locate(snake[1].x, snake[1].y);
+		std::cout << "*";
+	}
 
 	/* 吃到了食物 */
 	for (std::vector<node>::iterator iter = food.begin(); iter < food.end();)
@@ -271,13 +290,12 @@ bool go_ahead()
 	{
 		locate(temp.x, temp.y);
 		std::cout << " ";
+		if (fastMode)
+		{
+			locate(snake[snake_length].x, snake[snake_length].y);
+			std::cout << " ";
+		}
 	}
-	/*
-	else
-	{
-		print_food(newArea);
-	}
-	*/
 
 	locate(snake[0].x, snake[0].y);
 	std::cout << "@";
@@ -289,6 +307,12 @@ bool go_ahead()
 		std::cout << "You lose!" << std::endl << "Length: " << snake_length << std::endl;
 		return false;
 	}
+
+	if (fastMode)
+	{
+		fastMode = false;
+	}
+
 	return true;
 }
 
@@ -422,6 +446,8 @@ Again:
 			allArea[stage - 1] = newArea;
 		}
 
+		locate(width + 3, 2);
+		std::cout << "                    ";
 
 		/* 判断当前是否吃毒，吃毒则长度减少 */
 		cnt++;
@@ -472,6 +498,16 @@ Again:
 						combo = true;
 					}
 					break;
+				}
+			}
+			else if (ch == 32)
+			{
+				if (energy > 0)
+				{
+					fastMode = true;
+					energy--;
+					locate(width + 3, 2);
+					std::cout << "get into fast mode";
 				}
 			}
 		}
