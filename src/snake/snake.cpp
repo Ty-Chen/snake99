@@ -10,7 +10,7 @@
 #include <windows.h>
 #include <vector>
 
-#define FOOD_NUM 5
+#define FOOD_NUM 10
 #define INIT_LEN 5
 #define SECOND_FACTOR 0.3
 
