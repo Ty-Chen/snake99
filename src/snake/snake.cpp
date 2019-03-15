@@ -220,7 +220,7 @@ bool create_food(wall area)
 
 		food.push_back(tmp);
 		locate(tmp.x, tmp.y);
-		std::cout << "$";
+		//std::cout << "$";
 	}
 
 	return true;
@@ -384,6 +384,7 @@ Again:
 	hide();
 	print_wall(newArea, true);
 	create_food(newArea);
+	print_food();
 	print_snake();
 
 	lastClock = clock();
@@ -424,6 +425,7 @@ Again:
 				newWall = new_wall(newArea);
 				//system("cls");
 				print_wall(newWall, false);
+				print_snake();
 				print_food();
 			}
 
@@ -439,6 +441,7 @@ Again:
 			areaChange = false;
 
 			print_wall(newWall, true);
+			print_snake();
 			print_food();
 
 			/* ¸üÐÂnewArea */
