@@ -125,6 +125,12 @@ void print_snake()
 	}
 }
 
+/* 首次输出机器人 */
+void print_robot()
+{
+
+}
+
 /* 判断是否撞墙或者自撞 */
 bool is_correct()
 {
