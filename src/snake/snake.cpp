@@ -252,6 +252,7 @@ bool go_ahead()
 	{	
 		snake[i] = snake[i - 1];
 	}
+
 	snake[0].x += direct[dir][0];
 	snake[0].y += direct[dir][1];
 	locate(snake[1].x, snake[1].y);
@@ -260,6 +261,8 @@ bool go_ahead()
 	/*快速模式再前进一次*/
 	if (fastMode)
 	{
+		locate(snake[snake_length - 2].x, snake[snake_length - 2].y);
+		std::cout << " ";
 		snake_length -= 1;
 		for (int i = snake_length - 1; i >= 1; i--)
 		{
@@ -302,6 +305,7 @@ bool go_ahead()
 			std::cout << " ";
 		}
 	}
+
 
 	locate(snake[0].x, snake[0].y);
 	std::cout << "@";
@@ -366,7 +370,7 @@ Again:
 
 	cnt				= 0;
 	stage			= 1;
-	energy			= 0;
+	energy			= 5;
 	second			= 20;
 	areaChange		= false;
 	snake_length	= INIT_LEN;
