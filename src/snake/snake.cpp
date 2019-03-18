@@ -13,6 +13,7 @@
 #define FOOD_NUM 10
 #define INIT_LEN 5
 #define SECOND_FACTOR 0.3
+#define ROBOT_NUM 5
 
 /* 光标定位 */
 HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
