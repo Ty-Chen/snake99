@@ -10,10 +10,12 @@
 #include <windows.h>
 #include <vector>
 
-#define FOOD_NUM 10
-#define INIT_LEN 5
+#define MIN_GAP		  5
+#define FOOD_NUM	  10
+#define INIT_LEN	  5
+#define ROBOT_NUM     5
+#define NEXT_WALL     10
 #define SECOND_FACTOR 0.3
-#define ROBOT_NUM 5
 
 /* 光标定位 */
 HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -52,16 +54,24 @@ typedef struct wall
 	int xEnd;
 	int yStart;
 	int yEnd;
-};
+}wall;
+
+typedef struct robot 
+{
+	int  dir;
+	node snake[1000];
+}robot;
 
 wall initArea, newArea, allArea[10];
 
-int  stage  = 1;
-int  energy = 0;
+int  stage    = 1;
+int  energy   = 0;
+int  robotNum = 0;
 int  snake_length, dir;
 bool combo    = false;
 bool fastMode = false;
-std::vector<node> food;
+std::vector<node>  food;
+std::vector<robot> robotSnake;
 
 int direct[4][2] = 
 {	
@@ -126,10 +136,29 @@ void print_snake()
 	}
 }
 
-/* 首次输出机器人 */
-void print_robot()
+/* 初始化机器人 */
+void init_robot()
 {
+	std::vector<robot>::iterator iter;
+	srand((unsigned)time(0));
 
+	while (robotNum < ROBOT_NUM)
+	{
+		int x = (int)random(newArea.xStart, newArea.xEnd) + 1, y = (int)random(newArea.yStart, newArea.yEnd) + 1;
+
+		if ( (x <= snake[0].x + snake_length + 5) && y == 1)
+		{
+			continue;
+		}
+
+		for (iter = robotSnake.begin(); iter < robotSnake.end(); iter++)
+		{
+			if ((x <= snake[0].x + snake_length + 5) && y == 1)
+			{
+				continue;
+			}
+		}
+	}
 }
 
 /* 判断是否撞墙或者自撞 */
@@ -383,6 +412,7 @@ Again:
 	newArea = initArea;
 	allArea[stage - 1] = newArea;
 
+	//初始化蛇的位置：第一行最左
 	for (int i = 0; i < snake_length; i++)
 	{
 		snake[i].x = snake_length - i;
