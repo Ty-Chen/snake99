@@ -43,10 +43,10 @@ double random(double start, double end)
 
 /* 定义地图的初始长宽、缩圈长宽，蛇的坐标，长度，方向，食物的位置 */
 
-struct node
+typedef struct node
 {
 	int x, y;
-}snake[1000];
+}node;
 
 typedef struct wall
 {
@@ -59,19 +59,22 @@ typedef struct wall
 typedef struct robot 
 {
 	int  dir;
+	int  len;
 	node snake[1000];
 }robot;
 
+
+int  snake_length, dir;
 wall initArea, newArea, allArea[10];
+node snake[1000];
+std::vector<node>  food;
+std::vector<robot> robotSnake;
 
 int  stage    = 1;
 int  energy   = 0;
 int  robotNum = 0;
-int  snake_length, dir;
 bool combo    = false;
 bool fastMode = false;
-std::vector<node>  food;
-std::vector<robot> robotSnake;
 
 int direct[4][2] = 
 {	
@@ -125,7 +128,7 @@ void print_wall(wall area, bool real)
 }
 
 /* 首次输出蛇，其中snake[0]代表头 */
-void print_snake()
+void print_snake(node *snake, int snake_length)
 {
 	locate(snake[0].x, snake[0].y);
 	std::cout << "@";
@@ -142,23 +145,46 @@ void init_robot()
 	std::vector<robot>::iterator iter;
 	srand((unsigned)time(0));
 
+	/* 随机初始化要保证不会相撞 */
 	while (robotNum < ROBOT_NUM)
 	{
-		int x = (int)random(newArea.xStart, newArea.xEnd) + 1, y = (int)random(newArea.yStart, newArea.yEnd) + 1;
+		int x = (int)random(newArea.xStart + INIT_LEN, newArea.xEnd) + 1, y = (int)random(newArea.yStart, newArea.yEnd) + 1;
 
-		if ( (x <= snake[0].x + snake_length + 5) && y == 1)
+		if ( (x <= snake[0].x + INIT_LEN * 2) && y == 1)
 		{
 			continue;
 		}
 
 		for (iter = robotSnake.begin(); iter < robotSnake.end(); iter++)
 		{
-			if ((x <= snake[0].x + snake_length + 5) && y == 1)
+			if (y == iter->snake[0].y && 
+				(x <= iter->snake[0].x + INIT_LEN * 2) &&
+				(x >= iter->snake[INIT_LEN - 1].x - INIT_LEN))
 			{
 				continue;
 			}
 		}
+
+		robot tmp;
+
+		tmp.dir = dir;
+		tmp.len = INIT_LEN;
+		tmp.snake[0].x = x;
+		tmp.snake[0].y = y;
+		
+		for (int i = 1; i < INIT_LEN - 1; i++)
+		{
+			tmp.snake[i].x = x - i;
+			tmp.snake[i].y = y;
+		}
+
+		robotSnake.push_back(tmp);
+		print_snake(tmp.snake, tmp.len);
+		robotNum++;
 	}
+
+	return;
+
 }
 
 /* 判断是否撞墙或者自撞 */
@@ -426,7 +452,8 @@ Again:
 	print_wall(newArea, true);
 	create_food(newArea);
 	print_food();
-	print_snake();
+	init_robot();	
+	print_snake(snake, snake_length);
 
 	lastClock = clock();
 
@@ -466,7 +493,7 @@ Again:
 				newWall = new_wall(newArea);
 				//system("cls");
 				print_wall(newWall, false);
-				print_snake();
+				print_snake(snake, snake_length);
 				print_food();
 			}
 
@@ -482,7 +509,7 @@ Again:
 			areaChange = false;
 
 			print_wall(newWall, true);
-			print_snake();
+			print_snake(snake, snake_length);
 			print_food();
 
 			/* 更新newArea */
