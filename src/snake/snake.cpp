@@ -187,6 +187,12 @@ void init_robot()
 
 }
 
+/* 为机器人选择下一步的前进方向 */
+void robotGo()
+{
+
+}
+
 /* 判断是否撞墙或者自撞 */
 bool is_correct()
 {
