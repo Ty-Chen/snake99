@@ -1,5 +1,6 @@
-/************************Ì°³ÔÉß***********************/
+/************************è´ªåƒè›‡***********************/
 /**********************2019-02-24*********************/
+/**********************TyChen*************************/
 
 #include <iostream>
 #include <cstdio>
@@ -17,7 +18,7 @@
 #define NEXT_WALL     10
 #define SECOND_FACTOR 0.3
 
-/* ¹â±ê¶¨Î» */
+/* å…‰æ ‡å®šä½ */
 HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD coord;
 
@@ -28,20 +29,20 @@ void locate(int x, int y)
 	SetConsoleCursorPosition(hout, coord);
 };
 
-/* Òş²Ø¹â±ê */
+/* éšè—å…‰æ ‡ */
 void hide()
 {
 	CONSOLE_CURSOR_INFO cursor_info = { 1,0 };
 	SetConsoleCursorInfo(hout, &cursor_info);
 }
 
-/* Éú³ÉËæ»úÊı */
+/* ç”Ÿæˆéšæœºæ•° */
 double random(double start, double end)
 {
 	return start + (end - start)*rand() / (RAND_MAX + 1.0);
 }
 
-/* ¶¨ÒåµØÍ¼µÄ³õÊ¼³¤¿í¡¢ËõÈ¦³¤¿í£¬ÉßµÄ×ø±ê£¬³¤¶È£¬·½Ïò£¬Ê³ÎïµÄÎ»ÖÃ */
+/* å®šä¹‰åœ°å›¾çš„åˆå§‹é•¿å®½ã€ç¼©åœˆé•¿å®½ï¼Œè›‡çš„åæ ‡ï¼Œé•¿åº¦ï¼Œæ–¹å‘ï¼Œé£Ÿç‰©çš„ä½ç½® */
 
 typedef struct node
 {
@@ -78,13 +79,13 @@ bool fastMode = false;
 
 int direct[4][2] = 
 {	
-	{ 0, -1 }, //ÏÂ
-	{ 0, 1 },   //ÉÏ
-	{ -1, 0 }, //×ó
-	{ 1, 0 },  //ÓÒ
+	{ 0, -1 }, //ä¸‹
+	{ 0, 1 },   //ä¸Š
+	{ -1, 0 }, //å·¦
+	{ 1, 0 },  //å³
 };
 
-/* Êä³öÇ½ ĞéÇ½ÉÏÏÂÓÃ.×óÓÒ£º */
+/* è¾“å‡ºå¢™ è™šå¢™ä¸Šä¸‹ç”¨.å·¦å³ï¼š */
 void print_wall(wall area, bool real)
 {	
 	const char *floor, *wall;
@@ -127,7 +128,7 @@ void print_wall(wall area, bool real)
 	}
 }
 
-/* Ê×´ÎÊä³öÉß£¬ÆäÖĞsnake[0]´ú±íÍ· */
+/* é¦–æ¬¡è¾“å‡ºè›‡ï¼Œå…¶ä¸­snake[0]ä»£è¡¨å¤´ */
 void print_snake(node *snake, int snake_length)
 {
 	locate(snake[0].x, snake[0].y);
@@ -139,13 +140,13 @@ void print_snake(node *snake, int snake_length)
 	}
 }
 
-/* ³õÊ¼»¯»úÆ÷ÈË */
+/* åˆå§‹åŒ–æœºå™¨äºº */
 void init_robot()
 {
 	std::vector<robot>::iterator iter;
 	srand((unsigned)time(0));
 
-	/* Ëæ»ú³õÊ¼»¯Òª±£Ö¤²»»áÏà×² */
+	/* éšæœºåˆå§‹åŒ–è¦ä¿è¯ä¸ä¼šç›¸æ’ */
 	while (robotNum < ROBOT_NUM)
 	{
 		int x = (int)random(newArea.xStart + INIT_LEN, newArea.xEnd) + 1, y = (int)random(newArea.yStart, newArea.yEnd) + 1;
@@ -187,13 +188,13 @@ void init_robot()
 
 }
 
-/* Îª»úÆ÷ÈËÑ¡ÔñÏÂÒ»²½µÄÇ°½ø·½Ïò */
+/* ä¸ºæœºå™¨äººé€‰æ‹©ä¸‹ä¸€æ­¥çš„å‰è¿›æ–¹å‘ */
 void robotGo()
 {
 
 }
 
-/* ÅĞ¶ÏÊÇ·ñ×²Ç½»òÕß×Ô×² */
+/* åˆ¤æ–­æ˜¯å¦æ’å¢™æˆ–è€…è‡ªæ’ */
 bool is_correct()
 {
 	for (int i = 0; i < stage; i++)
@@ -220,7 +221,7 @@ bool is_correct()
 	return true;
 }
 
-/* ÅĞ¶ÏÊÇ·ñ³Ô¶¾ */
+/* åˆ¤æ–­æ˜¯å¦åƒæ¯’ */
 void is_danger()
 {
 	for (int i = 0; i < snake_length; i++)
@@ -237,7 +238,7 @@ void is_danger()
 	}
 }
 
-/* Ëæ»úÉú³ÉĞÂÈ¦ */
+/* éšæœºç”Ÿæˆæ–°åœˆ */
 wall new_wall(wall area)
 {
 	srand((unsigned)time(0));
@@ -257,7 +258,7 @@ wall new_wall(wall area)
 	return newWall;
 }
 
-/* Ëæ»úÉú³É²¢Êä³öÊ³ÎïÎ»ÖÃ */
+/* éšæœºç”Ÿæˆå¹¶è¾“å‡ºé£Ÿç‰©ä½ç½® */
 bool create_food(wall area)
 {
 	bool ok;
@@ -303,7 +304,7 @@ void print_food()
 	}
 }
 
-/* ÉßµÄÇ°½ø */
+/* è›‡çš„å‰è¿› */
 bool go_ahead()
 {
 	node temp;
@@ -320,7 +321,7 @@ bool go_ahead()
 	locate(snake[1].x, snake[1].y);
 	std::cout << "*";
 
-	/*¿ìËÙÄ£Ê½ÔÙÇ°½øÒ»´Î*/
+	/*å¿«é€Ÿæ¨¡å¼å†å‰è¿›ä¸€æ¬¡*/
 	if (fastMode)
 	{
 		locate(snake[snake_length - 2].x, snake[snake_length - 2].y);
@@ -336,7 +337,7 @@ bool go_ahead()
 		std::cout << "*";
 	}
 
-	/* ³Ôµ½ÁËÊ³Îï */
+	/* åƒåˆ°äº†é£Ÿç‰© */
 	for (std::vector<node>::iterator iter = food.begin(); iter < food.end();)
 	{ 
 		if (snake[0].x == iter->x && snake[0].y == iter->y)
@@ -356,7 +357,7 @@ bool go_ahead()
 		}
 	}
 
-	/* Êä³ö´ËÊ±Éß×´Ì¬ */
+	/* è¾“å‡ºæ­¤æ—¶è›‡çŠ¶æ€ */
 	if (!eat)
 	{
 		locate(temp.x, temp.y);
@@ -372,7 +373,7 @@ bool go_ahead()
 	locate(snake[0].x, snake[0].y);
 	std::cout << "@";
 
-	/* Èç¹û×Ô×² */
+	/* å¦‚æœè‡ªæ’ */
 	if (!is_correct())
 	{
 		system("cls");
@@ -388,17 +389,17 @@ bool go_ahead()
 	return true;
 }
 
-/* Ö÷º¯Êı */
+/* ä¸»å‡½æ•° */
 int main()
 {
 	int height, width;
 
-	std::cout << "--------------------Ì°³ÔÉß---------------------" << std::endl;
-	std::cout << "ÇëÊäÈëÁ½¸öÊı,±íÊ¾µØÍ¼¸ßºÍ¿î.ÒªÇó³¤¿í¾ù²»Ğ¡ÓÚ10." << std::endl;
-	std::cout << "Çë×¢Òâ´°¿Ú´óĞ¡,ÒÔÃâ·¢Éú´íÎ».½¨Òé½«´°¿Úµ÷Îª×î´ó." << std::endl;
-	std::cout << "ÔÙÑ¡ÔñÄÑ¶È.ÇëÔÚ1-10ÖĞÊäÈë1¸öÊı,1×î¼òµ¥,10Ôò×îÄÑ" << std::endl; 
-	std::cout << "Í»È»±äÏò»ñÈ¡Ê³Îï¿ÉÒÔµÃµ½ÄÜÁ¿½±ÀøÓÃÓÚ¼ÓËÙÍ»ÆÆÕÏ°­" << std::endl;
-	std::cout << "È»ºó½øÈëÓÎÏ·»­Ãæ,ÒÔ·½Ïò¼ü¿ØÖÆ·½Ïò.×£ÄãÓÎÏ·Óä¿ì!" << std::endl;
+	std::cout << "--------------------è´ªåƒè›‡---------------------" << std::endl;
+	std::cout << "è¯·è¾“å…¥ä¸¤ä¸ªæ•°,è¡¨ç¤ºåœ°å›¾é«˜å’Œæ¬¾.è¦æ±‚é•¿å®½å‡ä¸å°äº10." << std::endl;
+	std::cout << "è¯·æ³¨æ„çª—å£å¤§å°,ä»¥å…å‘ç”Ÿé”™ä½.å»ºè®®å°†çª—å£è°ƒä¸ºæœ€å¤§." << std::endl;
+	std::cout << "å†é€‰æ‹©éš¾åº¦.è¯·åœ¨1-10ä¸­è¾“å…¥1ä¸ªæ•°,1æœ€ç®€å•,10åˆ™æœ€éš¾" << std::endl; 
+	std::cout << "çªç„¶å˜å‘è·å–é£Ÿç‰©å¯ä»¥å¾—åˆ°èƒ½é‡å¥–åŠ±ç”¨äºåŠ é€Ÿçªç ´éšœç¢" << std::endl;
+	std::cout << "ç„¶åè¿›å…¥æ¸¸æˆç”»é¢,ä»¥æ–¹å‘é”®æ§åˆ¶æ–¹å‘.ç¥ä½ æ¸¸æˆæ„‰å¿«!" << std::endl;
 	std::cout << "-----------------------------------------------" << std::endl;
 	std::cin >> height >> width;
 
@@ -421,7 +422,7 @@ int main()
 
 Again:
 
-	/* Êı¾İÈ«²¿³õÊ¼»¯£¬°üÀ¨Éß³¤£¬Î»ÖÃ£¬·½Ïò */
+	/* æ•°æ®å…¨éƒ¨åˆå§‹åŒ–ï¼ŒåŒ…æ‹¬è›‡é•¿ï¼Œä½ç½®ï¼Œæ–¹å‘ */
 	int		cnt;
 	char	ch;
 	wall	newWall;
@@ -444,7 +445,7 @@ Again:
 	newArea = initArea;
 	allArea[stage - 1] = newArea;
 
-	//³õÊ¼»¯ÉßµÄÎ»ÖÃ£ºµÚÒ»ĞĞ×î×ó
+	//åˆå§‹åŒ–è›‡çš„ä½ç½®ï¼šç¬¬ä¸€è¡Œæœ€å·¦
 	for (int i = 0; i < snake_length; i++)
 	{
 		snake[i].x = snake_length - i;
@@ -452,7 +453,7 @@ Again:
 	}
 	dir = 3;
 
-	/* Êä³ö³õÊ¼µØÍ¼£¬ÉßÓëÊ³Îï */
+	/* è¾“å‡ºåˆå§‹åœ°å›¾ï¼Œè›‡ä¸é£Ÿç‰© */
 	system("cls");
 	hide();
 	print_wall(newArea, true);
@@ -463,14 +464,14 @@ Again:
 
 	lastClock = clock();
 
-	/* ¿ªÊ¼ÓÎÏ· */
+	/* å¼€å§‹æ¸¸æˆ */
 	while (1)
 	{
-		/* ÄÑ¶ÈËæ³¤¶ÈÔö¼Ó¶øÌá¸ß 
+		/* éš¾åº¦éšé•¿åº¦å¢åŠ è€Œæé«˜ 
 		double hard_len = (double)snake_length / (double)(height * width);
 		*/
 
-		/* µ÷½ÚÊ±¼ä£¬µ¥Î»ÊÇms */
+		/* è°ƒèŠ‚æ—¶é—´ï¼Œå•ä½æ˜¯ms */
 		moveClockA = clock();
 		while (1)
 		{
@@ -484,7 +485,7 @@ Again:
 
 		if (second > 10)
 		{ 
-			/* µ¹¼ÆÊ± */
+			/* å€’è®¡æ—¶ */
 			locate(allArea[0].xEnd + 3, 1);
 			std::cout << "new wall will appear in " << int (second - 10) << " seconds                ";
 			second -= SECOND_FACTOR;
@@ -495,7 +496,7 @@ Again:
 			{
 				areaChange = true;
 
-				/* Ë¢ĞÂËæ»úËõÈ¦²¢´òÓ¡ */
+				/* åˆ·æ–°éšæœºç¼©åœˆå¹¶æ‰“å° */
 				newWall = new_wall(newArea);
 				//system("cls");
 				print_wall(newWall, false);
@@ -503,7 +504,7 @@ Again:
 				print_food();
 			}
 
-			/* µ¹¼ÆÊ± */
+			/* å€’è®¡æ—¶ */
 			locate(allArea[0].xEnd + 3, 1);
 			std::cout << "outer area will be dangerous in " << int (second) << " seconds";
 			second -= SECOND_FACTOR;
@@ -518,7 +519,7 @@ Again:
 			print_snake(snake, snake_length);
 			print_food();
 
-			/* ¸üĞÂnewArea */
+			/* æ›´æ–°newArea */
 			newArea = newWall;
 			allArea[stage - 1] = newArea;
 		}
@@ -526,7 +527,7 @@ Again:
 		locate(width + 3, 2);
 		std::cout << "                    ";
 
-		/* ÅĞ¶Ïµ±Ç°ÊÇ·ñ³Ô¶¾£¬³Ô¶¾Ôò³¤¶È¼õÉÙ */
+		/* åˆ¤æ–­å½“å‰æ˜¯å¦åƒæ¯’ï¼Œåƒæ¯’åˆ™é•¿åº¦å‡å°‘ */
 		cnt++;
 		if (cnt * SECOND_FACTOR > 1)
 		{
@@ -534,7 +535,7 @@ Again:
 			cnt = 0;
 		}
 
-		/* ½ÓÊÜ¼üÅÌÊäÈëµÄÉÏÏÂ×óÓÒ£¬²¢ÒÔ´Ë¸Ä±ä·½Ïò */
+		/* æ¥å—é”®ç›˜è¾“å…¥çš„ä¸Šä¸‹å·¦å³ï¼Œå¹¶ä»¥æ­¤æ”¹å˜æ–¹å‘ */
 		if (_kbhit())
 		{
 			ch = _getch();
@@ -543,7 +544,7 @@ Again:
 				ch = _getch();
 				switch (ch)
 				{
-				//ÉÏ
+				//ä¸Š
 				case 72:
 					if (dir == 2 || dir == 3)
 					{
@@ -551,7 +552,7 @@ Again:
 						combo = true;
 					}
 					break;
-				//ÏÂ
+				//ä¸‹
 				case 80:
 					if (dir == 2 || dir == 3)
 					{
@@ -559,7 +560,7 @@ Again:
 						combo = true;
 					}
 					break;
-				//×ó
+				//å·¦
 				case 75:
 					if (dir == 0 || dir == 1)
 					{
@@ -567,7 +568,7 @@ Again:
 						combo = true;
 					}
 					break;
-				//ÓÒ
+				//å³
 				case 77:
 					if (dir == 0 || dir == 1)
 					{
@@ -589,7 +590,7 @@ Again:
 			}
 		}
 
-		/* Ç°½ø */
+		/* å‰è¿› */
 		if (!go_ahead())
 		{
 			break;
@@ -597,7 +598,7 @@ Again:
 
 		combo = false;
 
-		/* ÔÚ×îºóÊä³ö´ËÊ±³¤¶È, ÄÜÁ¿Öµ£¬ ÓÎÏ·½×¶Î */
+		/* åœ¨æœ€åè¾“å‡ºæ­¤æ—¶é•¿åº¦, èƒ½é‡å€¼ï¼Œ æ¸¸æˆé˜¶æ®µ */
 		locate(0, height + 2);
 		std::cout << "Now length: " << snake_length << std::endl;
 		std::cout << "energy : " << energy << std::endl;
