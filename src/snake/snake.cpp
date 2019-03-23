@@ -1,6 +1,6 @@
-/************************贪吃蛇***********************/
-/**********************2019-02-24*********************/
-/**********************TyChen*************************/
+/***********************snake99**********************/
+/**********************2019-02-24********************/
+/************************TyChen**********************/
 
 #include <iostream>
 #include <cstdio>
@@ -10,80 +10,7 @@
 #include <cmath>
 #include <windows.h>
 #include <vector>
-
-#define MIN_GAP		  5
-#define FOOD_NUM	  10
-#define INIT_LEN	  5
-#define ROBOT_NUM     5
-#define NEXT_WALL     10
-#define SECOND_FACTOR 0.3
-
-/* 光标定位 */
-HANDLE hout = GetStdHandle(STD_OUTPUT_HANDLE);
-COORD coord;
-
-void locate(int x, int y)
-{
-	coord.X = x;
-	coord.Y = y;
-	SetConsoleCursorPosition(hout, coord);
-};
-
-/* 隐藏光标 */
-void hide()
-{
-	CONSOLE_CURSOR_INFO cursor_info = { 1,0 };
-	SetConsoleCursorInfo(hout, &cursor_info);
-}
-
-/* 生成随机数 */
-double random(double start, double end)
-{
-	return start + (end - start)*rand() / (RAND_MAX + 1.0);
-}
-
-/* 定义地图的初始长宽、缩圈长宽，蛇的坐标，长度，方向，食物的位置 */
-
-typedef struct node
-{
-	int x, y;
-}node;
-
-typedef struct wall
-{
-	int xStart;
-	int xEnd;
-	int yStart;
-	int yEnd;
-}wall;
-
-typedef struct robot 
-{
-	int  dir;
-	int  len;
-	node snake[1000];
-}robot;
-
-
-int  snake_length, dir;
-wall initArea, newArea, allArea[10];
-node snake[1000];
-std::vector<node>  food;
-std::vector<robot> robotSnake;
-
-int  stage    = 1;
-int  energy   = 0;
-int  robotNum = 0;
-bool combo    = false;
-bool fastMode = false;
-
-int direct[4][2] = 
-{	
-	{ 0, -1 }, //下
-	{ 0, 1 },   //上
-	{ -1, 0 }, //左
-	{ 1, 0 },  //右
-};
+#include "snake.h"
 
 /* 输出墙 虚墙上下用.左右： */
 void print_wall(wall area, bool real)
@@ -189,9 +116,94 @@ void init_robot()
 }
 
 /* 为机器人选择下一步的前进方向 */
-void robotGo()
+void robotDir(node *snake)
 {
 
+}
+
+/* 机器人前进 */
+bool robotGo(node *snake)
+{
+	node temp;
+	bool eat = false;
+	temp = snake[snake_length - 1];
+
+	for (int i = snake_length - 1; i >= 1; i--)
+	{
+		snake[i] = snake[i - 1];
+	}
+
+	snake[0].x += direct[dir][0];
+	snake[0].y += direct[dir][1];
+	locate(snake[1].x, snake[1].y);
+	std::cout << "*";
+
+	/*快速模式再前进一次*/
+	if (fastMode)
+	{
+		locate(snake[snake_length - 2].x, snake[snake_length - 2].y);
+		std::cout << " ";
+		snake_length -= 1;
+		for (int i = snake_length - 1; i >= 1; i--)
+		{
+			snake[i] = snake[i - 1];
+		}
+		snake[0].x += direct[dir][0];
+		snake[0].y += direct[dir][1];
+		locate(snake[1].x, snake[1].y);
+		std::cout << "*";
+	}
+
+	/* 吃到了食物 */
+	for (std::vector<node>::iterator iter = food.begin(); iter < food.end();)
+	{
+		if (snake[0].x == iter->x && snake[0].y == iter->y)
+		{
+			snake_length++;
+			eat = true;
+			snake[snake_length - 1] = temp;
+			if (combo)
+			{
+				energy++;
+			}
+			iter = food.erase(iter);
+		}
+		else
+		{
+			iter++;
+		}
+	}
+
+	/* 输出此时蛇状态 */
+	if (!eat)
+	{
+		locate(temp.x, temp.y);
+		std::cout << " ";
+		if (fastMode)
+		{
+			locate(snake[snake_length].x, snake[snake_length].y);
+			std::cout << " ";
+		}
+	}
+
+
+	locate(snake[0].x, snake[0].y);
+	std::cout << "@";
+
+	/* 如果自撞 */
+	if (!is_correct())
+	{
+		system("cls");
+		std::cout << "You lose!" << std::endl << "Length: " << snake_length << std::endl;
+		return false;
+	}
+
+	if (fastMode)
+	{
+		fastMode = false;
+	}
+
+	return true;
 }
 
 /* 判断是否撞墙或者自撞 */
@@ -394,12 +406,8 @@ int main()
 {
 	int height, width;
 
-	std::cout << "--------------------贪吃蛇---------------------" << std::endl;
-	std::cout << "请输入两个数,表示地图高和款.要求长宽均不小于10." << std::endl;
-	std::cout << "请注意窗口大小,以免发生错位.建议将窗口调为最大." << std::endl;
-	std::cout << "再选择难度.请在1-10中输入1个数,1最简单,10则最难" << std::endl; 
-	std::cout << "突然变向获取食物可以得到能量奖励用于加速突破障碍" << std::endl;
-	std::cout << "然后进入游戏画面,以方向键控制方向.祝你游戏愉快!" << std::endl;
+	std::cout << "-----------------------------------------------" << std::endl;
+	std::cout << "--------------------snake99--------------------" << std::endl;
 	std::cout << "-----------------------------------------------" << std::endl;
 	std::cin >> height >> width;
 
