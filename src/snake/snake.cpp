@@ -100,7 +100,7 @@ void init_robot()
 		tmp.snake[0].x = x;
 		tmp.snake[0].y = y;
 		
-		for (int i = 1; i < INIT_LEN - 1; i++)
+		for (int i = 1; i < INIT_LEN; i++)
 		{
 			tmp.snake[i].x = x - i;
 			tmp.snake[i].y = y;
