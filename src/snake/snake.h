@@ -4,6 +4,7 @@
 #define INIT_LEN	  5
 #define ROBOT_NUM     5
 #define NEXT_WALL     10
+#define FOOD_ALLURE   5
 #define SECOND_FACTOR 0.3
 
 /* 光标定位 */
@@ -45,19 +46,19 @@ typedef struct wall
 	int yEnd;
 }wall;
 
-typedef struct robot
+typedef struct robotSnake
 {
 	int  dir;
 	int  len;
 	node snake[1000];
-}robot;
+}robotSnake;
 
 
 int  snake_length, dir;
 wall initArea, newArea, allArea[10];
 node snake[1000];
 std::vector<node>  food;
-std::vector<robot> robotSnake;
+std::vector<robotSnake> robots;
 
 int  stage = 1;
 int  energy = 0;

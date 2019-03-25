@@ -70,7 +70,7 @@ void print_snake(node *snake, int snake_length)
 /* 初始化机器人 */
 void init_robot()
 {
-	std::vector<robot>::iterator iter;
+	std::vector<robotSnake>::iterator iter;
 	srand((unsigned)time(0));
 
 	/* 随机初始化要保证不会相撞 */
@@ -83,7 +83,7 @@ void init_robot()
 			continue;
 		}
 
-		for (iter = robotSnake.begin(); iter < robotSnake.end(); iter++)
+		for (iter = robots.begin(); iter < robots.end(); iter++)
 		{
 			if (y == iter->snake[0].y && 
 				(x <= iter->snake[0].x + INIT_LEN * 2) &&
@@ -93,7 +93,7 @@ void init_robot()
 			}
 		}
 
-		robot tmp;
+		robotSnake tmp;
 
 		tmp.dir = dir;
 		tmp.len = INIT_LEN;
@@ -106,7 +106,7 @@ void init_robot()
 			tmp.snake[i].y = y;
 		}
 
-		robotSnake.push_back(tmp);
+		robots.push_back(tmp);
 		print_snake(tmp.snake, tmp.len);
 		robotNum++;
 	}
@@ -116,8 +116,27 @@ void init_robot()
 }
 
 /* 为机器人选择下一步的前进方向 */
-void robotDir(node *snake)
+void robotDir(robotSnake robot)
 {
+	/* 首先判断当前是否在圈内，如果有缩圈则向圈内移动 */
+	for (std::vector<node>::iterator iter = food.begin(); iter < food.end();)
+	{
+		if ((abs(robot.snake[0].x - iter->x) <= FOOD_ALLURE) &&
+			(abs(robot.snake[0].y - iter->y) <= FOOD_ALLURE)
+			)
+		{
+
+		}
+	}
+
+	/* 这个先不做：然后判断附近是否有敌人，有的话上前攻击 */
+
+
+	/* 接着判断当前圈内附近有没有食物，有的话向食物移动 */
+
+
+	/* 都没有则继续前进 */
+
 
 }
 
@@ -407,7 +426,7 @@ int main()
 	int height, width;
 
 	std::cout << "-----------------------------------------------" << std::endl;
-	std::cout << "--------------------snake99--------------------" << std::endl;
+	std::cout << "------------------- snake99 -------------------" << std::endl;
 	std::cout << "-----------------------------------------------" << std::endl;
 	std::cin >> height >> width;
 

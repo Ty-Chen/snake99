@@ -1,5 +1,5 @@
 ﻿  snake.cpp
 e:\snake\snake99\src\snake\snake.cpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-e:\snake\snake99\src\snake\snake.cpp(267): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
-e:\snake\snake99\src\snake\snake.cpp(268): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+e:\snake\snake99\src\snake\snake.cpp(277): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
+e:\snake\snake99\src\snake\snake.cpp(278): warning C4244: “=”: 从“double”转换到“int”，可能丢失数据
   snake.vcxproj -> E:\snake\snake99\src\Debug\snake.exe
