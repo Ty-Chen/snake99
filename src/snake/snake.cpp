@@ -118,21 +118,48 @@ void init_robot()
 /* 为机器人选择下一步的前进方向 */
 void robotDir(robotSnake robot)
 {
-	/* 首先判断当前是否在圈内，如果有缩圈则向圈内移动 */
+	/* 首先判断是否前进方向会碰撞，会的话转向 */
+	
+
+	/* 然后判断当前是否在圈内，如果有缩圈则向圈内移动 */
+
+
+	/* 这个先不做：然后判断附近是否有敌人，有的话上前攻击 */
+
+
+	/* 接着判断当前圈内附近有没有食物，有的话向食物移动 */
 	for (std::vector<node>::iterator iter = food.begin(); iter < food.end();)
 	{
 		if ((abs(robot.snake[0].x - iter->x) <= FOOD_ALLURE) &&
 			(abs(robot.snake[0].y - iter->y) <= FOOD_ALLURE)
 			)
 		{
+			int x = robot.snake[0].x - iter->x;
+			int y = robot.snake[0].y - iter->y;
 
+			if (x == 0 && y == 0)
+			{
+
+			}
+
+			if (x < 0 && y < 0)
+			{
+
+			}
+			else if (x < 0 && y > 0)
+			{
+
+			}
+			else if (x > 0 && y > 0)
+			{
+
+			}
+			else if (x > 0 && y < 0)
+			{
+
+			}
 		}
 	}
-
-	/* 这个先不做：然后判断附近是否有敌人，有的话上前攻击 */
-
-
-	/* 接着判断当前圈内附近有没有食物，有的话向食物移动 */
 
 
 	/* 都没有则继续前进 */
@@ -204,7 +231,6 @@ bool robotGo(node *snake)
 			std::cout << " ";
 		}
 	}
-
 
 	locate(snake[0].x, snake[0].y);
 	std::cout << "@";
