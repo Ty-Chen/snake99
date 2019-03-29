@@ -50,6 +50,8 @@ typedef struct robotSnake
 {
 	int  dir;
 	int  len;
+	int  energy;
+	bool fastMode;
 	node snake[1000];
 }robotSnake;
 
