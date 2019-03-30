@@ -119,7 +119,20 @@ void init_robot()
 void robotDir(robotSnake robot)
 {
 	/* 首先判断是否前进方向会碰撞蛇或墙壁，会的话转向/攻击/撞破 */
+	int tmpX = robot.snake[0].x + direct[robot.dir][0];
+	int tmpY = robot.snake[0].y + direct[robot.dir][1];
+	for (int i = 0; i < stage; i++)
+	{
+		if (tmpX == allArea[i].xStart || tmpY == allArea[i].yStart
+			|| tmpX == allArea[i].xEnd + 1 || tmpY == allArea[i].yEnd + 1)
+		{
+			if (!robot.fastMode)
+			{
+				
+			}
 
+		}
+	}
 
 	/* 然后判断当前是否在圈内，如果有缩圈则向圈内移动 */
 
