@@ -11,6 +11,8 @@ public class SnakeHead : MonoBehaviour
     public int step;
     private int x;
     private int y;
+    public int xlimit = 21;
+    public int ylimit = 11;
     private Vector3 headPos;
     private Transform canvas;
     private bool isDie = false;
@@ -33,7 +35,14 @@ public class SnakeHead : MonoBehaviour
     void Start()
     {
         InvokeRepeating("Move", 0, velocity);
-        x = 0;y = step;
+
+        //随机初始位置
+        gameObject.transform.localPosition = 
+            new Vector3(Random.Range(-xlimit, xlimit) * 30, Random.Range(-ylimit, ylimit) * 30, 0);  
+
+        //初始方向定位向屏幕中间走动
+        x = 0;
+        y = step;
     }
 
     void Update()
@@ -43,31 +52,62 @@ public class SnakeHead : MonoBehaviour
             CancelInvoke();
             InvokeRepeating("Move", 0, velocity - 0.2f);
         }
+
         if (Input.GetKeyUp(KeyCode.Space) && MainUIController.Instance.isPause == false && isDie == false)
         {
             CancelInvoke();
             InvokeRepeating("Move", 0, velocity);
         }
+
         if (Input.GetKey(KeyCode.W) && y != -step && MainUIController.Instance.isPause == false && isDie == false)
         {
             gameObject.transform.localRotation = Quaternion.Euler(0, 0, 0);
             x = 0;y = step;
         }
+
         if (Input.GetKey(KeyCode.S) && y != step && MainUIController.Instance.isPause == false && isDie == false)
         {
             gameObject.transform.localRotation = Quaternion.Euler(0, 0, 180);
             x = 0; y = -step;
         }
+
         if (Input.GetKey(KeyCode.A) && x != step && MainUIController.Instance.isPause == false && isDie == false)
         {
             gameObject.transform.localRotation = Quaternion.Euler(0, 0, 90);
             x = -step; y = 0;
         }
+
         if (Input.GetKey(KeyCode.D) && x != -step && MainUIController.Instance.isPause == false && isDie == false)
         {
             gameObject.transform.localRotation = Quaternion.Euler(0, 0, -90);
             x = step; y = 0;
         }
+
+        if (Input.GetKey(KeyCode.UpArrow) && y != -step && MainUIController.Instance.isPause == false && isDie == false)
+        {
+            gameObject.transform.localRotation = Quaternion.Euler(0, 0, 0);
+            x = 0; y = step;
+        }
+
+        if (Input.GetKey(KeyCode.DownArrow) && y != step && MainUIController.Instance.isPause == false && isDie == false)
+        {
+            gameObject.transform.localRotation = Quaternion.Euler(0, 0, 180);
+            x = 0; y = -step;
+        }
+
+        if (Input.GetKey(KeyCode.LeftArrow) && x != step && MainUIController.Instance.isPause == false && isDie == false)
+        {
+            gameObject.transform.localRotation = Quaternion.Euler(0, 0, 90);
+            x = -step; y = 0;
+        }
+
+        if (Input.GetKey(KeyCode.RightArrow) && x != -step && MainUIController.Instance.isPause == false && isDie == false)
+        {
+            gameObject.transform.localRotation = Quaternion.Euler(0, 0, -90);
+            x = step; y = 0;
+        }
+
+
     }
 
     void Move()

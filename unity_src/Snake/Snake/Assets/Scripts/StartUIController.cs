@@ -32,6 +32,7 @@ public class StartUIController : MonoBehaviour
             PlayerPrefs.SetString("sb01", "sb0201");
             PlayerPrefs.SetString("sb02", "sb0202");
         }
+
         if (PlayerPrefs.GetInt("border", 1) == 1)
         {
             border.isOn = true;
